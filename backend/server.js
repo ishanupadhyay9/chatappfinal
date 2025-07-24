@@ -13,7 +13,22 @@ const auth = router;
 const app = express();
 const PORT = parseInt(process.env.PORT) || 3000;
 app.use(cors({
-    origin: "*",                  
+    origin: [
+        "http://localhost:5173",
+        "https://quickchat-frontend-ah2p.onrender.com"
+    ],
+    credentials: true,  // Now this works with specific origins
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+// Handle preflight requests
+app.options("*", cors({
+    origin: [
+        "http://localhost:5173", 
+        "https://quickchat-frontend-ah2p.onrender.com"
+    ],
+    credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"]
 }));
