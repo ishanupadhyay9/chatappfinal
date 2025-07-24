@@ -14,7 +14,7 @@ const app = express();
 const PORT = parseInt(process.env.PORT) || 3000;
 app.use(cors(
     {
-        origin:"http://localhost:5173",
+        origin:["http://localhost:5173","https://quickchat-frontend-ah2p.onrender.com"],
         credentials: true // allow frontend to send cookies
     }
 )) ; 
