@@ -1,5 +1,5 @@
 import axios from "axios";
 export const axiosInstance = axios.create({
-   baseURL:"http://localhost:3000/api",
+   baseURL:" https://quickchat-server-gzrh.onrender.com",
    withCredentials:true // to send cookies
 })
