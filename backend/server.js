@@ -12,6 +12,11 @@ const auth = router;
 
 const app = express();
 const PORT = parseInt(process.env.PORT) || 3000;
+const allowedOrigins = [
+    "http://localhost:5173",
+    "https://quickchat-frontend-ah2.onrender.com"
+];
+
 app.use(cors({
     origin: allowedOrigins,
     credentials: true,                               // allow cookies / auth headers
