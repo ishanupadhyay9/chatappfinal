@@ -133,20 +133,20 @@ export async function updateInfo(req,res){
   try{
   
     const {userId,fullName, bio, profilePic}= req.body;
-   const objectId = Number(userId);
+   
     if(!fullName || !bio){
       return res.status(400).json({message :`all fields are required`, Object:req.body,objectId:objectId});
 
     }
     console.log(userId);
-   const change = await User.findByIdAndUpdate(objectId,{
+   const change = await User.findByIdAndUpdate(userId,{
       fullName,
       bio, 
       profilePic,
       isOnboarded:true ,
     },{new:true});
-    if(true){
-      return res.status(404).json({message:"user not found",body:req.body,change:change});
+    if(!change){
+      return res.status(404).json({message:"user not found",body:req.body});
     }
     console.log(change);
    try{
