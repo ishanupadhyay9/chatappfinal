@@ -2,11 +2,15 @@ import { axiosInstance } from "./axios";
 
 export const signup = async (signupData) => {
   const response = await axiosInstance.post("/auth/signup", signupData);
+  const jwtToken = response.data.token;
+  localStorage.setItem('jwtToken',jwtToken);
   return response.data;
 };
 
 export const login = async (loginData) => {
   const response = await axiosInstance.post("/auth/login", loginData);
+  const jwtToken = response.data.token;
+  localStorage.setItem('jwtToken',jwtToken);
   return response.data;
 };
 export const logout = async () => {
@@ -16,7 +20,8 @@ export const logout = async () => {
 
 export const getAuthUser = async () => {
   try {
-    const res = await axiosInstance.get("/auth/me",{withCredentials:true});
+    const jwtToken = localStorage.getItem('jwtToken');
+    const res = await axiosInstance.get("/auth/me",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true});
     return res.data;
   } catch (error) {
     console.log("Error in getAuthUser:", error);

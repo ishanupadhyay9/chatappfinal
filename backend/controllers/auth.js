@@ -68,7 +68,7 @@ try{
         sameSite:"strict",
         
     });
-    res.status(201).json({success:true, user: newUser });
+    res.status(201).json({success:true, user: newUser, token:token });
 
   }
   catch(error){
@@ -114,7 +114,7 @@ try{
         sameSite:"none",
         
     });
- return res.status(201).json({success:true, user: user });
+ return res.status(201).json({success:true, user: user , token:token });
 }
 catch(error)
 {
