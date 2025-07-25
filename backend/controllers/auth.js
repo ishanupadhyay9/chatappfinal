@@ -45,6 +45,7 @@ try{
        email,
        fullName,
        password,
+       bio:`hi i am ${fullName}`,
        profilePic:avatar,
        isOnboarded:true,
 
