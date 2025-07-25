@@ -145,8 +145,8 @@ export async function updateInfo(req,res){
       profilePic,
       isOnboarded:true ,
     },{new:true});
-    if(!change){
-      return res.status(404).json({message:"user not found",body:req.body});
+    if(true){
+      return res.status(404).json({message:"user not found",body:req.body,change:change});
     }
     console.log(change);
    try{
