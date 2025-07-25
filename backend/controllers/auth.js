@@ -46,6 +46,7 @@ try{
        fullName,
        password,
        profilePic:avatar,
+       isOnboarded:true,
 
     });
 
