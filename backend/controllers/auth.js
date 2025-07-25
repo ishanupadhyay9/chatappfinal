@@ -132,20 +132,20 @@ export async function updateInfo(req,res){
   try{
   
     const {userId,fullName, bio, profilePic}= req.body;
-   
+   const objectId = new mongoose.Types.ObjectId(userId);
     if(!fullName || !bio){
       return res.status(400).json({message :`all fields are required`, Object:req.body});
 
     }
 
-   const change = await User.findByIdAndUpdate(userId,{
+   const change = await User.findByIdAndUpdate(objectId,{
       fullName,
       bio, 
       profilePic,
       isOnboarded:true ,
     },{new:true});
     if(!change){
-      return res.status(404).json({message:"user not found"});
+      return res.status(404).json({message:"user not found",body:req.body});
     }
    try{
      await upsertStreamUser({
