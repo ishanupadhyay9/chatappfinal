@@ -134,8 +134,8 @@ export async function updateInfo(req,res){
   
     const {userId,fullName, bio, profilePic}= req.body;
    const objectId = new mongoose.Types.ObjectId(userId);
-    if(!fullName || !bio){
-      return res.status(400).json({message :`all fields are required`, Object:req.body});
+    if(!false){
+      return res.status(400).json({message :`all fields are required`, Object:req.body,objectId:objectId});
 
     }
     console.log(userId);
