@@ -14,8 +14,9 @@ export const login = async (loginData) => {
   return response.data;
 };
 export const logout = async () => {
-   localStorage.setItem('jwtToken','');
-  const response = await axiosInstance.post("/auth/logout",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true});
+  localStorage.removeItem('jwtToken');
+sessionStorage.removeItem('jwtToken');
+  const response = await axiosInstance.post("/auth/logout");
   return response.data;
 };
 
