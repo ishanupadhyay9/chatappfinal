@@ -11,8 +11,10 @@ const OnboardingPage = () => {
   const { authUser } = useAuthUser();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  console.log(authUser);
+
   const [formState, setFormState] = useState({
-    userId:authUser?._id||" ",
+     UserId : authUser?._id,
     fullName: authUser?.fullName || "",
     bio: authUser?.bio || "",
     profilePic: authUser?.profilePic || "",

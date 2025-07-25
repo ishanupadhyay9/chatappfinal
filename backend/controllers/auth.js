@@ -128,10 +128,11 @@ res.status(200).json({success:true, message:"logout successful"})
 }
 
 export async function updateInfo(req,res){
-  console.log(req.user);
+ 
   try{
-    const userId  = req.user._id;
-    const {fullName, bio, profilePic}= req.body;
+  
+    const {userId,fullName, bio, profilePic}= req.body;
+    console.log(req.body);
     if(!fullName || !bio){
       return res.status(400).json({message :"all fields are required"});
 
