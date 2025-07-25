@@ -33,7 +33,7 @@ export const getAuthUser = async () => {
 export const completeOnboarding = async (userData) => {
   console.log(userData);
   const jwtToken = localStorage.getItem('jwtToken');
-  const response = await axiosInstance.post("/auth/update",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true}, userData);
+  const response = await axiosInstance.post("/auth/update", userData);
   return response.data;
 };
 
@@ -63,7 +63,7 @@ export async function getFriendRequests() {
 }
 export async function findFriend(ref){
   const jwtToken = localStorage.getItem('jwtToken');
-    const response = await axiosInstance.post("/users/find-friend",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true},ref);
+    const response = await axiosInstance.post("/users/find-friend",ref,{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true});
     console.log(response,response.data);
     return response.data;
 
