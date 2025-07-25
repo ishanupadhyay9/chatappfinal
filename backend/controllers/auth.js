@@ -132,9 +132,9 @@ export async function updateInfo(req,res){
   try{
   
     const {userId,fullName, bio, profilePic}= req.body;
-    console.log(req.body);
+   
     if(!fullName || !bio){
-      return res.status(400).json({message :`all fields are required ${fullName} ${bio}`});
+      return res.status(400).json({message :`all fields are required ${req.body}`});
 
     }
 
