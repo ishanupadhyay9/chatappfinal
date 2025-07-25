@@ -18,6 +18,7 @@ export async function sendFriendRequest(req,res){
     try{
      const myId= req.body.userId;
      const {id:recipientId}= req.params;
+     return res.status(400).json({message: "You can not sed friend request to yourself",body:myId}); 
      if(myId == recipientId)
      {
         return res.status(400).json({message: "You can not sed friend request to yourself"}); 
