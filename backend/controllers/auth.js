@@ -109,9 +109,9 @@ try{
 
    const token = jwt.sign({userId:user._id, fullName:user.fullName}, process.env.JWT_SECRET_KEY, {expiresIn:"5m"});
 
-    res.cookie("jwt",token,{maxAge: 60*60*1000,
+    res.cookie("jwt",token,{maxAge: 24*60*60*1000,
         httpOnly:true,
-        sameSite:"strict",
+        sameSite:"none",
         
     });
  return res.status(201).json({success:true, user: user });
