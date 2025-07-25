@@ -16,7 +16,7 @@ res.status(500).json({message:"INTERNAL SERVER ERROR"})
 
 export async function sendFriendRequest(req,res){
     try{
-     const myId= req.body.userId;
+     const myId= req.body.myId;
      const {id:recipientId}= req.params;
      console.log(myId);
      if(myId == recipientId)

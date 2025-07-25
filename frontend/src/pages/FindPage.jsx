@@ -13,11 +13,12 @@ const FindPage = () => {
     const [loading, setLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false); // Add this to track if search was performed
     const { authUser } = useAuthUser();
-    const userId = authUser._id;
+    const myId = authUser._id;
+    const [userId, setUserId]= useState("");
     const queryClient = useQueryClient();
     
     const { mutate: sendRequestMutation, isPending } = useMutation({
-        mutationFn: sendFriendRequest(userId),
+        mutationFn: sendFriendRequest(myId,userId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
             toast.success("Friend request sent successfully");
@@ -119,7 +120,7 @@ const FindPage = () => {
 
                                             <button
                                                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-md text-sm font-medium transition-colors"
-                                                onClick={() => sendRequestMutation(user._id)}
+                                                onClick={() =>{setUserId(user._id); sendRequestMutation()}}
                                                 disabled={isPending}
                                             >
                                                 {isPending ? 'Sending...' : 'Send Request'}
