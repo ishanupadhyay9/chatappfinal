@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import { upsertStreamUser } from "../connects/stream.js";
+import mongoose from "mongoose";
 dotenv.config();
 export async function signup(req,res){
 const {email, password, fullName}= req.body;
@@ -137,7 +138,7 @@ export async function updateInfo(req,res){
       return res.status(400).json({message :`all fields are required`, Object:req.body});
 
     }
-
+    console.log(userId);
    const change = await User.findByIdAndUpdate(objectId,{
       fullName,
       bio, 
@@ -147,6 +148,7 @@ export async function updateInfo(req,res){
     if(!change){
       return res.status(404).json({message:"user not found",body:req.body});
     }
+    console.log(change);
    try{
      await upsertStreamUser({
       id:change._id.toString(),
