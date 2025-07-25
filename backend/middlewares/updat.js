@@ -38,6 +38,6 @@ export async function protectRoute(req,res,next){
      next();
     }
     catch(error){
-        return res.status(500).json({message:"unauthorized access"});
+        return res.status(500).json({message:"unauthorized access token error"});
     }
 }

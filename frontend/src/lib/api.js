@@ -15,7 +15,7 @@ export const login = async (loginData) => {
 };
 export const logout = async () => {
    localStorage.setItem('jwtToken','');
-  const response = await axiosInstance.post("/auth/logout");
+  const response = await axiosInstance.post("/auth/logout",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true});
   return response.data;
 };
 
@@ -31,42 +31,50 @@ export const getAuthUser = async () => {
 };
 
 export const completeOnboarding = async (userData) => {
-  const response = await axiosInstance.post("/auth/update", userData);
+  const jwtToken = localStorage.getItem('jwtToken');
+  const response = await axiosInstance.post("/auth/update",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true}, userData);
   return response.data;
 };
 
 export async function getUserFriends() {
-  const response = await axiosInstance.get("/users/friends");
+  const jwtToken = localStorage.getItem('jwtToken');
+  const response = await axiosInstance.get("/users/friends",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true});
   return response.data;
 }
 
 
 export async function getOutgoingFriendReqs() {
-  const response = await axiosInstance.get("/users/outgoing-friend-requests");
+  const jwtToken = localStorage.getItem('jwtToken');
+  const response = await axiosInstance.get("/users/outgoing-friend-requests",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true});
   return response.data;
 }
 
 export async function sendFriendRequest(userId) {
-  const response = await axiosInstance.post(`/users/friend-request/${userId}`);
+  const jwtToken = localStorage.getItem('jwtToken');
+  const response = await axiosInstance.post(`/users/friend-request/${userId}`,{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true});
   return response.data;
 }
 
 export async function getFriendRequests() {
-  const response = await axiosInstance.get("/users/friend-requests");
+  const jwtToken = localStorage.getItem('jwtToken');
+  const response = await axiosInstance.get("/users/friend-requests",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true});
   return response.data;
 }
 export async function findFriend(ref){
-    const response = await axiosInstance.post("/users/find-friend",ref);
+  const jwtToken = localStorage.getItem('jwtToken');
+    const response = await axiosInstance.post("/users/find-friend",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true},ref);
     console.log(response,response.data);
     return response.data;
 
 }
 export async function acceptFriendRequest(requestId) {
-  const response = await axiosInstance.put(`/users/friend-request/${requestId}/accept`);
+  const jwtToken = localStorage.getItem('jwtToken');
+  const response = await axiosInstance.put(`/users/friend-request/${requestId}/accept`,{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true});
   return response.data;
 }
 
 export async function getStreamToken() {
-  const response = await axiosInstance.get("/chat/token");
+  const jwtToken = localStorage.getItem('jwtToken');
+  const response = await axiosInstance.get("/chat/token",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true});
   return response.data;
 }
