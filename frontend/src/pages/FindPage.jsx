@@ -6,17 +6,18 @@ import { findFriend, sendFriendRequest } from '../lib/api';
 import NoFriendsFound from '../components/NoFriendsFound';
 import { useQueryClient, useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-
+import useAuthUser from '../hooks/useAuthUser';
 const FindPage = () => {
     const [ref, setRef] = useState(""); // Fixed: camelCase naming
     const [searchData, setSearchData] = useState([]);
     const [loading, setLoading] = useState(false);
     const [hasSearched, setHasSearched] = useState(false); // Add this to track if search was performed
-    
+    const { authUser } = useAuthUser();
+    const userId = authUser._id;
     const queryClient = useQueryClient();
     
     const { mutate: sendRequestMutation, isPending } = useMutation({
-        mutationFn: sendFriendRequest,
+        mutationFn: sendFriendRequest(userId),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
             toast.success("Friend request sent successfully");
