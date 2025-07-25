@@ -31,7 +31,7 @@ export const getAuthUser = async () => {
 };
 
 export const completeOnboarding = async (userData) => {
-  
+  console.log(userData);
   const jwtToken = localStorage.getItem('jwtToken');
   const response = await axiosInstance.post("/auth/update",{headers:{Authorization: `Bearer ${jwtToken}`}, withCredentials:true}, userData);
   return response.data;
