@@ -51,9 +51,9 @@ export async function getOutgoingFriendReqs() {
   return response.data;
 }
 
-export async function sendFriendRequest(userId,myId) {
-  const jwtToken = localStorage.getItem('jwtToken');
-  const response = await axiosInstance.post(`/users/friend-request/${userId}`,myId);
+export async function sendFriendRequest(reqdata) {
+ 
+  const response = await axiosInstance.post(`/users/friend-request`,reqdata);
   return response.data;
 }
 

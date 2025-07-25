@@ -16,15 +16,15 @@ res.status(500).json({message:"INTERNAL SERVER ERROR"})
 
 export async function sendFriendRequest(req,res){
     try{
-     const myId= req.body.myId;
-     const {id:recipientId}= req.params;
-     console.log(myId);
-     if(myId == recipientId)
+     const {myId,userId}= req.body;
+     
+     
+     if(myId == userId)
      {
         return res.status(400).json({message: "You can not sed friend request to yourself"}); 
      }
     try{
-         const rec = await User.findById(recipientId);
+         const rec = await User.findById(userId);
 
       if(!rec)
      {
@@ -37,8 +37,8 @@ export async function sendFriendRequest(req,res){
          try{
    const existingRequest = await FriendRequest.findOne({
     $or:[
-        {sender:myId, recipient:recipientId},
-        {sender:recipientId, recipient:myId},
+        {sender:myId, recipient:userId},
+        {sender:userId, recipient:myId},
     ]
    });
    if(existingRequest)
@@ -56,7 +56,7 @@ export async function sendFriendRequest(req,res){
      try{
   const newFr  =await FriendRequest.create({
     sender:myId,
-    recipient:recipientId
+    recipient:userId
   });
   res.status(201).json(newFr);
      } 

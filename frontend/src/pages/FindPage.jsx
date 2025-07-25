@@ -18,7 +18,7 @@ const FindPage = () => {
     const queryClient = useQueryClient();
     
     const { mutate: sendRequestMutation, isPending } = useMutation({
-        mutationFn: sendFriendRequest(myId,userId),
+        mutationFn: sendFriendRequest({myId:myId,userId:userId}),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] });
             toast.success("Friend request sent successfully");
