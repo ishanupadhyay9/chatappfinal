@@ -107,7 +107,7 @@ try{
 
   }
 
-   const token =  jwt.sign({userId:user._id, fullName:user.fullName}, process.env.JWT_SECRET_KEY, {expiresIn:"5m"});
+   const token = jwt.sign({userId:user._id, fullName:user.fullName}, process.env.JWT_SECRET_KEY, {expiresIn:"5m"});
 
     res.cookie("jwt",token,{maxAge: 24*60*60*1000,
         httpOnly:true,
@@ -130,7 +130,8 @@ res.status(200).json({success:true, message:"logout successful"})
 export async function updateInfo(req,res){
   console.log(req.user);
   try{
-    const {userId ,fullName, bio, profilePic}= req.body;
+    const userId  = req.user._id;
+    const {fullName, bio, profilePic}= req.body;
     if(!fullName || !bio){
       return res.status(400).json({message :"all fields are required"});
 
