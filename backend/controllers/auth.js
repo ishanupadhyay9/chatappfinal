@@ -134,7 +134,7 @@ export async function updateInfo(req,res){
     const {userId,fullName, bio, profilePic}= req.body;
    
     if(!fullName || !bio){
-      return res.status(400).json({message :`all fields are required ${req.body}`});
+      return res.status(400).json({message :`all fields are required`, Object:req.body});
 
     }
 
