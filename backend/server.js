@@ -9,6 +9,7 @@ import userRouter from "./routes/user.js";
 import {connectDB} from "./connects/mongodb.js" 
 import chatRouter from "./routes/chat.js";
 import { cloudinaryConnect } from "./connects/cloudinary.js";
+import fileUpload from "express-fileupload";
 const auth = router;
 
 const app = express();
