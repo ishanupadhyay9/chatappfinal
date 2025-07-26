@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import bcrypt from "bcryptjs";
 import { upsertStreamUser } from "../connects/stream.js";
+import { ObjectId } from 'mongodb'; 
 import mongoose from "mongoose";
 dotenv.config();
 export async function signup(req,res){
@@ -130,46 +131,32 @@ await res.clearCookie("jwt");
 res.status(200).json({success:true, message:"logout successful"})
 }
 
-export async function updateInfo(req,res){
- 
-  try{
-  
-    const {userId,fullName, bio, profilePic}= req.body;
-   
-    if(!fullName || !bio){
-      return res.status(400).json({message :`all fields are required`, Object:req.body,objectId:objectId});
 
+
+export async function updateInfo(req, res) {
+  try {
+    const { userId, fullName, bio, profilePic } = req.body;
+    
+    // Validate ObjectId format
+    if (!ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
     }
-    console.log(userId);
-   const change = await User.findByIdAndUpdate(userId,{
-      fullName,
-      bio, 
-      profilePic,
-      isOnboarded:true ,
-    },{new:true});
-    if(!change){
-      return res.status(404).json({message:"user not found",body:req.body});
-    }
-    console.log(change);
-   try{
-     await upsertStreamUser({
-      id:change._id.toString(),
-      name:change.fullName,
-      image:change.profilePic || "",
-    })
-    console.log("stream update successful");
-
-   }
-   catch(error)
-   {
-    console.log("stream updat error");
-
-   }
-    return res.status(200).json({success:true, user:change});
+    
+    // Convert to ObjectId if needed
+    const change = await User.findByIdAndUpdate(
+      new ObjectId(userId), // or mongoose.Types.ObjectId(userId)
+      {
+        fullName,
+        bio,
+        profilePic,
+        isOnboarded: true,
+      },
+      { new: true }
+    );
+    
+    // rest of your code...
+  } catch (error) {
+    console.error("Update error:", error);
+    res.status(500).json({ message: "error in updating info" });
   }
-  catch(error)
-  {
- res.status(500).json({message:"error in updating info"});
-  }
-
 }
