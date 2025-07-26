@@ -91,15 +91,7 @@ const App = () => {
 
         <Route
           path="/onboarding"
-          element={
-            isAuthenticated ? (
-              
-                <OnboardingPage />
-              ) 
-            : (
-              <Navigate to="/login" />
-            )
-          }
+          element={ <OnboardingPage />}
         />
 
          <Route
