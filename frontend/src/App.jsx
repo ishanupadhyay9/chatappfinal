@@ -15,7 +15,7 @@ import PageLoader from "./components/PageLoader.jsx";
 import useAuthUser from "./hooks/useAuthUser.js";
 import Layout from "./components/Layout.jsx";
 import FindPage from "./pages/FindPage.jsx";
-import Profilepage from "./pages/Profilepage.jsx";
+
 
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
