@@ -133,110 +133,50 @@ res.status(200).json({success:true, message:"logout successful"})
 
 
 
-export async function updateInfo(req, res) {
-  try {
-    const { userId, fullName, bio, profilePic } = req.body;
-    
-    // Send debugging info in response instead of console.log
-    const debugInfo = {
-      receivedUserId: userId,
-      userIdType: typeof userId,
-      userIdLength: userId?.length,
-      fullRequestBody: req.body
-    };
-    
-    if (!userId) {
-      return res.status(400).json({ 
-        message: "UserId is required",
-        debug: debugInfo
-      });
-    }
-    
-    if (!fullName || !bio) {
-      return res.status(400).json({ 
-        message: "all fields are required",
-        debug: debugInfo
-      });
-    }
-    
-    // Try to find and update the user
-    const change = await User.findByIdAndUpdate(
-      userId,
-      {
-        fullName,
-        bio,
-        profilePic,
-        isOnboarded: true,
-      },
-      { new: true }
-    );
-    
-    if (!change) {
-      return res.status(404).json({ 
-        message: "user not found",
-        debug: {
-          ...debugInfo,
-          searchedUserId: userId,
-          attemptedUpdate: true
-        }
-      });
-    }
-    
-    // If successful, include debug info in success response too
-    try {
-      await upsertStreamUser({
-        id: change._id.toString(),
-        name: change.fullName,
-        image: change.profilePic || "",
-      });
-      
-      return res.status(200).json({
-        success: true,
-        user: change,
-        debug: {
-          ...debugInfo,
-          updateSuccessful: true,
-          streamUpdateSuccessful: true
-        }
-      });
-      
-    } catch (streamError) {
-      return res.status(200).json({
-        success: true,
-        user: change,
-        debug: {
-          ...debugInfo,
-          updateSuccessful: true,
-          streamUpdateSuccessful: false,
-          streamError: streamError.message
-        }
-      });
-    }
-    
-  } catch (error) {
-    // Send detailed error info in response
-    const errorResponse = {
-      message: "error in updating info",
-      debug: {
-        receivedUserId: req.body?.userId,
-        userIdType: typeof req.body?.userId,
-        userIdLength: req.body?.userId?.length,
-        errorName: error.name,
-        errorMessage: error.message,
-        fullRequestBody: req.body
-      }
-    };
-    
-    // Handle specific ObjectId cast errors
-    if (error.name === 'CastError') {
-      errorResponse.message = "Invalid userId format";
-      errorResponse.debug.castErrorDetails = {
-        kind: error.kind,
-        value: error.value,
-        path: error.path
-      };
-    }
-    
-    res.status(500).json(errorResponse);
-  }
+export async function updateInfo(req,res){
+
+try{
+ 
+ const {UserId,fullName, bio, profilePic}= req.body;
+ const userId = UserId;
+ if(!fullName || !bio){
+ return res.status(400).json({message :`all fields are required`, Object:req.body,objectId:objectId});
+
+
+ }
+ console.log(userId);
+const change = await User.findByIdAndUpdate(userId,{
+ fullName,
+  bio, 
+  profilePic,
+ isOnboarded:true ,
+ },{new:true});
+ if(!change){
+  return res.status(404).json({message:"user not found",body:req.body});
+ }
+ console.log(change);
+try{
+ await upsertStreamUser({
+  id:change._id.toString(),
+  name:change.fullName,
+  image:change.profilePic || "",
+ })
+ console.log("stream update successful");
+
+
 }
+catch(error)
+{
+ console.log("stream updat error");
+
+
+}
+ return res.status(200).json({success:true, user:change});
+}
+catch(error)
+{
+res.status(500).json({message:"error in updating info"});
+ }
+
+
+} 
