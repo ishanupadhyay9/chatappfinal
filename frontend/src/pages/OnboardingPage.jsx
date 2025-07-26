@@ -19,8 +19,6 @@ const updateDisplayPicture = async (file, userId) => {
     if (!file) {
       throw new Error("No file provided");
     }
-    
-    if (!userId) {
       throw new Error("User ID is required");
     }
     
@@ -43,7 +41,7 @@ const updateDisplayPicture = async (file, userId) => {
     if (response.status === 200 && response.data?.success) {
       return response.data;
     } else {
-      message || 'Upload failed');
+      throw new Error(response.data?.message || 'Upload failed');
     }
 
   } catch (error) {
