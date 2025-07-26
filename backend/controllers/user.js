@@ -176,90 +176,91 @@ export async function findFriend(req, res) {
 }
 
 
-export async function updateDisplayPicture(req, res) {
-    try {
-        // Input validation
-        if (!req.files || !req.files.displayPicture) {
-            return res.status(400).json({
-                success: false,
-                message: "No image file provided"
-            });
-        }
-
-        const { userId } = req.body;
-        if (!userId) {
-            return res.status(400).json({
-                success: false,
-                message: "User ID is required"
-            });
-        }
-
-        // Authorization check (assuming you have user info in req.user from auth middleware)
-        if (req.user && req.user.id !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: "You can only update your own profile picture"
-            });
-        }
-
-        const displayPicture = req.files.displayPicture;
-
-        // File validation
-        if (!displayPicture.mimetype.startsWith('image/')) {
-            return res.status(400).json({
-                success: false,
-                message: "Only image files are allowed"
-            });
-        }
-
-        if (displayPicture.size > 5 * 1024 * 1024) { // 5MB limit
-            return res.status(400).json({
-                success: false,
-                message: "File size must be less than 5MB"
-            });
-        }
-
-        // Upload to Cloudinary
-        const image = await uploadImageToCloudinary(
-            displayPicture,
-            process.env.FOLDER_NAME,
-            1000,
-            1000
-        );
-
-        if (!image || !image.secure_url) {
-            return res.status(500).json({
-                success: false,
-                message: "Failed to upload image to cloud storage"
-            });
-        }
-
-        // Update user profile
-        const updatedProfile = await User.findByIdAndUpdate(
-            { _id: userId },
-            { profilePic: image.secure_url },
-            { new: true }
-        );
-
-        if (!updatedProfile) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found"
-            });
-        }
-
-        // Consistent response format
-        return res.status(200).json({
-            success: true,
-            message: "Image updated successfully",
-            data: updatedProfile,
-        });
-
-    } catch (error) {
-        console.error("Error in updateDisplayPicture:", error);
-        return res.status(500).json({
-            success: false,
-            message: error.message || "Internal server error"
-        });
+export async function updateDisplayPicture (req, res) {
+  try {
+    /* ─────────── INPUT + AUTH VALIDATION ─────────── */
+    if (!req.files?.displayPicture) {
+      return res.status(400).json({
+        success: false,
+        message: "No image file provided"
+      });
     }
+
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "User ID is required"
+      });
+    }
+
+    // Optional: ensure only the owner can update
+    if (req.user && req.user.id !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only update your own profile picture"
+      });
+    }
+
+    const file = req.files.displayPicture;
+
+    /* ─────────── FILE VALIDATION ─────────── */
+    if (!file.mimetype.startsWith("image/")) {
+      return res.status(400).json({
+        success: false,
+        message: "Only image files are allowed"
+      });
+    }
+
+    const MAX_SIZE = 5 * 1024 * 1024; // 5 MB
+    if (file.size > MAX_SIZE) {
+      return res.status(400).json({
+        success: false,
+        message: "Image size must be under 5 MB"
+      });
+    }
+
+    /* ─────────── CLOUDINARY UPLOAD ─────────── */
+    const uploaded = await uploadImageToCloudinary(
+      file,
+      process.env.FOLDER_NAME,
+      1000,
+      1000
+    );
+
+    if (!uploaded?.secure_url) {
+      return res.status(500).json({
+        success: false,
+        message: "Failed to upload image to Cloudinary"
+      });
+    }
+
+    /* ─────────── DB UPDATE ─────────── */
+    const updatedProfile = await User.findByIdAndUpdate(
+      userId,                       // 🔑 pass the ID directly
+      { profilePic: uploaded.secure_url },
+      { new: true }
+    );
+
+    if (!updatedProfile) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+
+    /* ─────────── SUCCESS ─────────── */
+    return res.status(200).json({
+      success: true,
+      message: "Profile picture updated",
+      data: updatedProfile
+    });
+
+  } catch (err) {
+    console.error("updateDisplayPicture ➜", err);
+    return res.status(500).json({
+      success: false,
+      message: err.message || "Internal server error"
+    });
+  }
 }
