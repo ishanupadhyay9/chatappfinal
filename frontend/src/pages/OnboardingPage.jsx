@@ -28,7 +28,7 @@ const updateDisplayPicture = async (file, userId) => {
     formData.append('displayPicture', file);
     formData.append('userId', userId);
 
-    console.log("FormData contents:");
+    console
     for (let [key, value] of formData.entries()) {
       console.log(key, value instanceof File ? `File: ${value.name}` : value);
     }
@@ -38,7 +38,9 @@ const updateDisplayPicture = async (file, userId) => {
       timeout: 30000
     });
 
-    console.log("Upload response:", response); response.data?.success) {
+    console.log("Upload response:", response);
+
+    if (response.status === 200 && response.data?.success) {
       return response.data;
     } else {
       throw new Error(response.data?.message || 'Upload failed');
