@@ -8,10 +8,20 @@ import router from "./routes/auth.js";
 import userRouter from "./routes/user.js"; 
 import {connectDB} from "./connects/mongodb.js" 
 import chatRouter from "./routes/chat.js";
+import { cloudinaryConnect } from "./connects/cloudinary.js";
 const auth = router;
 
 const app = express();
 const PORT = parseInt(process.env.PORT) || 3000;
+app.use(
+	fileUpload({
+		useTempFiles:true,
+		tempFileDir:"/tmp",
+	})
+)
+
+cloudinaryConnect();
+
 app.use(cors({
     origin: [
         "http://localhost:5173",
