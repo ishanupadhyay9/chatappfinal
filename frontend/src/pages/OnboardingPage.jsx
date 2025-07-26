@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { completeOnboarding } from "../lib/api";
 import { LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from "lucide-react";
 import { useNavigate } from "react-router";
+import Navbar from "../components/Navbar.jsx";
 
 
 const OnboardingPage = () => {
@@ -48,6 +49,8 @@ const OnboardingPage = () => {
   };
 
   return (
+    <div>
+    <Navbar/>
     <div className="min-h-screen bg-base-100 flex items-center justify-center p-4">
       <div className="card bg-base-200 w-full max-w-3xl shadow-xl">
         <div className="card-body p-6 sm:p-8">
@@ -125,6 +128,8 @@ const OnboardingPage = () => {
         </div>
       </div>
     </div>
+    </div>
   );
+
 };
 export default OnboardingPage;

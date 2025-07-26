@@ -118,12 +118,7 @@ const App = () => {
           }
         />
 
-          <Route
-          path="/profile"
-          element={
-            <Profilepage/>
-          }
-        />
+         
 
       </Routes>
 
