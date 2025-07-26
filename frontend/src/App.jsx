@@ -15,6 +15,7 @@ import PageLoader from "./components/PageLoader.jsx";
 import useAuthUser from "./hooks/useAuthUser.js";
 import Layout from "./components/Layout.jsx";
 import FindPage from "./pages/FindPage.jsx";
+import Profilepage from "./pages/Profilepage.jsx";
 
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
@@ -109,6 +110,20 @@ const App = () => {
             isAuthenticated && isOnboarded ? (
               <Layout showSidebar={true}>
               <FindPage/>
+              </Layout>
+            ) : (
+              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            )
+          
+          }
+        />
+
+          <Route
+          path="/profile"
+          element={
+            isAuthenticated && isOnboarded ? (
+              <Layout showSidebar={true}>
+              <Profilepage/>
               </Layout>
             ) : (
               <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />

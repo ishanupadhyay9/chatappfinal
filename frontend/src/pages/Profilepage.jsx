@@ -1,44 +1,26 @@
-import { useState } from "react";
-import useAuthUser from "../hooks/useAuthUser.js";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import toast from "react-hot-toast";
-import { completeOnboarding } from "../lib/api";
-import { LoaderIcon, MapPinIcon, ShipWheelIcon, ShuffleIcon } from "lucide-react";
-import { useNavigate } from "react-router";
+import React from 'react'
+import useAuthUser from '../hooks/useAuthUser';
+import { completeOnboarding } from '../lib/api';
+import {  useQueryClient } from '@tanstack/react-query';
+const Profilepage = () => {
+    const { authUser } = useAuthUser();
+      const queryClient = useQueryClient();
+      const [formState, setFormState] = useState({
+         UserId : authUser?._id,
+        fullName: authUser?.fullName || "",
+        bio: authUser?.bio || "",
+        profilePic: authUser?.profilePic || "",
+      });
+  
+      const onSubmit = async(e)=>{
+        e.preventDefault();
+        const res = await completeOnboarding(formState);
+        if(res)toast.success("Profile updated successfully");
+        else{toast.error("error in updating profile")};
+         queryClient.invalidateQueries({ queryKey: ["authUser"] });
+      }
 
-
-const OnboardingPage = () => {
-  const { authUser } = useAuthUser();
-  const queryClient = useQueryClient();
-  const navigate = useNavigate();
-  console.log(authUser);
-
-  const [formState, setFormState] = useState({
-     UserId : authUser?._id,
-    fullName: authUser?.fullName || "",
-    bio: authUser?.bio || "",
-    profilePic: authUser?.profilePic || "",
-  });
-
-  const { mutate: onboardingMutation, isPending } = useMutation({
-    mutationFn: completeOnboarding,
-    onSuccess: () => {
-      toast.success("Profile onboarded successfully");
-      navigate('/');
-      queryClient.invalidateQueries({ queryKey: ["authUser"] });
-    },
-
-    onError: (error) => {
-      toast.error(error.response.data.message);
-    },
-  });
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-
-    onboardingMutation(formState);
-  };
-
+      
   const handleRandomAvatar = () => {
     const idx = Math.floor(Math.random() * 100) + 1; // 1-100 included
     const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
@@ -46,6 +28,7 @@ const OnboardingPage = () => {
     setFormState({ ...formState, profilePic: randomAvatar });
     toast.success("Random profile picture generated!");
   };
+
 
   return (
     <div className="min-h-screen bg-base-100 flex items-center justify-center p-4">
@@ -126,5 +109,6 @@ const OnboardingPage = () => {
       </div>
     </div>
   );
-};
-export default OnboardingPage;
+}
+
+export default Profilepage
