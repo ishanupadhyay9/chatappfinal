@@ -12,8 +12,6 @@ export async function cloudinaryConnect(){
 	}
 };
 
-const cloudinary = require("cloudinary").v2
-
 export async function uploadImageToCloudinary (file, folder, height, quality) {
   const options = { folder }
   if (height) {
