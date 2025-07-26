@@ -19,6 +19,8 @@ const updateDisplayPicture = async (file, userId) => {
     if (!file) {
       throw new Error("No file provided");
     }
+    
+    if (!userId) {
       throw new Error("User ID is required");
     }
     
@@ -36,9 +38,7 @@ const updateDisplayPicture = async (file, userId) => {
       timeout: 30000
     });
 
-    console.log("Upload response:", response);
-
-    if (response.status === 200 && response.data?.success) {
+    console.log("Upload response:", response); response.data?.success) {
       return response.data;
     } else {
       throw new Error(response.data?.message || 'Upload failed');
