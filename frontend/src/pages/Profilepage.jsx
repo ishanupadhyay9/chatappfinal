@@ -8,7 +8,7 @@ const Profilepage = () => {
         const res = useAuthUser();
         setAuthUser(res);
 
-    }[]);
+    },[]);
       const queryClient = useQueryClient();
       const [formState, setFormState] = useState({
          UserId : authUser?._id,
