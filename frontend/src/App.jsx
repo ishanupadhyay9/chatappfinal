@@ -121,12 +121,7 @@ const App = () => {
           <Route
           path="/profile"
           element={
-            isAuthenticated && isOnboarded ? (
             <Profilepage/>
-            ) : (
-              <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
-            )
-          
           }
         />
 
