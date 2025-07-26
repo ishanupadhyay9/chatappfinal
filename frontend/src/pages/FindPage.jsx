@@ -120,7 +120,12 @@ const FindPage = () => {
 
                                             <button
                                                 className="px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-md text-sm font-medium transition-colors"
-                                                onClick={() =>{setUserId(user._id); sendRequestMutation()}}
+                                                onClick={async() =>{setUserId(user._id);
+                                                     sendRequestMutation();
+                                                      const response = await findFriend({ ref: ref.trim() });
+                                                       const users = response?.data?.users || response?.users || [];
+                                                     setSearchData(users);
+                                                }}
                                                 disabled={isPending}
                                             >
                                                 {isPending ? 'Sending...' : 'Connect'}
