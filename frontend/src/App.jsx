@@ -122,9 +122,7 @@ const App = () => {
           path="/profile"
           element={
             isAuthenticated && isOnboarded ? (
-              <Layout showSidebar={true}>
-              <div>hii</div>
-              </Layout>
+            <div>hiiiii</div>
             ) : (
               <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
             )
