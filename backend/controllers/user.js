@@ -176,13 +176,24 @@ export async function findFriend(req, res) {
 }
 
 
-export async function updateDisplayPicture (req, res) {
+export async function updateDisplayPicture(req, res) {
   try {
+    // ✅ ENHANCED: Debug incoming request
+    console.log("=== UPLOAD REQUEST DEBUG ===");
+    console.log("Headers content-type:", req.headers['content-type']);
+    console.log("Files received:", req.files ? Object.keys(req.files) : 'No files');
+    console.log("Body received:", req.body);
+
     /* ─────────── INPUT + AUTH VALIDATION ─────────── */
     if (!req.files?.displayPicture) {
       return res.status(400).json({
         success: false,
-        message: "No image file provided"
+        message: "No image file provided",
+        debug: {
+          filesReceived: req.files ? Object.keys(req.files) : [],
+          bodyReceived: req.body,
+          contentType: req.headers['content-type']
+        }
       });
     }
 
@@ -191,6 +202,15 @@ export async function updateDisplayPicture (req, res) {
       return res.status(400).json({
         success: false,
         message: "User ID is required"
+      });
+    }
+
+    // ✅ ADDED: Check if user exists before processing file
+    const existingUser = await User.findById(userId);
+    if (!existingUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
       });
     }
 
@@ -203,6 +223,14 @@ export async function updateDisplayPicture (req, res) {
     }
 
     const file = req.files.displayPicture;
+    
+    // ✅ ENHANCED: Debug file details
+    console.log("File details:", {
+      name: file.name,
+      size: file.size,
+      mimetype: file.mimetype,
+      tempFilePath: file.tempFilePath
+    });
 
     /* ─────────── FILE VALIDATION ─────────── */
     if (!file.mimetype.startsWith("image/")) {
@@ -220,26 +248,46 @@ export async function updateDisplayPicture (req, res) {
       });
     }
 
+    // ✅ ADDED: Check for empty/corrupted files
+    if (file.size === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "File appears to be corrupted or empty"
+      });
+    }
+
     /* ─────────── CLOUDINARY UPLOAD ─────────── */
-    const uploaded = await uploadImageToCloudinary(
-      file,
-      process.env.FOLDER_NAME,
-      1000,
-      1000
-    );
+    let uploaded;
+    try {
+      console.log("Starting Cloudinary upload...");
+      uploaded = await uploadImageToCloudinary(
+        file,
+        process.env.FOLDER_NAME,
+        1000,
+        1000
+      );
+      console.log("Cloudinary upload successful:", uploaded?.secure_url);
+    } catch (uploadError) {
+      console.error("Cloudinary upload failed:", uploadError);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to upload image to Cloudinary",
+        debug: { error: uploadError.message }
+      });
+    }
 
     if (!uploaded?.secure_url) {
       return res.status(500).json({
         success: false,
-        message: "Failed to upload image to Cloudinary"
+        message: "Upload succeeded but no image URL received"
       });
     }
 
     /* ─────────── DB UPDATE ─────────── */
     const updatedProfile = await User.findByIdAndUpdate(
-      userId,                       // 🔑 pass the ID directly
+      userId,
       { profilePic: uploaded.secure_url },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
     if (!updatedProfile) {
@@ -252,15 +300,24 @@ export async function updateDisplayPicture (req, res) {
     /* ─────────── SUCCESS ─────────── */
     return res.status(200).json({
       success: true,
-      message: "Profile picture updated",
-      data: updatedProfile
+      message: "Profile picture updated successfully",
+      data: {
+        profilePic: updatedProfile.profilePic,
+        _id: updatedProfile._id,
+        fullName: updatedProfile.fullName
+      }
     });
 
   } catch (err) {
-    console.error("updateDisplayPicture ➜", err);
+    console.error("updateDisplayPicture ERROR:", err);
     return res.status(500).json({
       success: false,
-      message: err.message || "Internal server error"
+      message: err.message || "Internal server error",
+      debug: {
+        error: err.name,
+        timestamp: new Date().toISOString()
+      }
     });
   }
 }
+

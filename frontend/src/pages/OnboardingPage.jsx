@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from "react";
+import React from "react";
 import useAuthUser from "../hooks/useAuthUser.js";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
@@ -7,7 +8,6 @@ import { LoaderIcon, ShipWheelIcon, UploadIcon, CameraIcon } from "lucide-react"
 import { useNavigate } from "react-router";
 import Navbar from "../components/Navbar.jsx";
 import { axiosInstance } from "../lib/axios.js";
-import React from "react";
 
 const updateDisplayPicture = async (file, userId) => {
   try {
@@ -26,16 +26,15 @@ const updateDisplayPicture = async (file, userId) => {
     }
     
     const formData = new FormData();
-    formData.append('displayPicture', file);
-    formData.append('userId', userId);
+    formData.append('displayformData.append('userId', userId);
 
     console.log("FormData contents:");
     for (let [key, value] of formData.entries()) {
       console.log(key, value instanceof File ? `File: ${value.name}` : value);
     }
 
+    // ✅ FIXED: Removed empty headers object, let axios handle Content-Type
     const response = await axiosInstance.post('/users/update-pic', formData, {
-      headers: {},
       withCredentials: true,
       timeout: 30000
     });
@@ -114,6 +113,7 @@ const OnboardingPage = () => {
     onSuccess: (data) => {
       console.log("Upload success:", data);
       
+      // ✅ FIXED: Handle the response structure correctly
       const profilePicUrl = data.data?.profilePic || data.profilePic;
       
       if (profilePicUrl) {
@@ -329,4 +329,3 @@ const OnboardingPage = () => {
 };
 
 export default OnboardingPage;
-
