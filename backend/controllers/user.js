@@ -35,39 +35,26 @@ export async function sendFriendRequest(req,res){
       }
 
          try{
-   const existingRequest = await FriendRequest.findOne({
-    $or:[
-        {sender:myId, recipient:userId},
-        {sender:userId, recipient:myId},
-    ]
-   });
-   if(existingRequest)
-   {
-    return res.status(400).json({
-        message:"A friend request already exists between the 2 users"
-    });
-   }
+
+             await User.findByIdAndUpdate(myId,{
+        $addToSet:{friends:userId},
+     });
+
+      await User.findByIdAndUpdate(userId,{
+        $addToSet:{friends:myId},
+     });
+
+   
     }
     catch(error)
     {
-       res.status(500).message("error in sending friend request");
+       res.status(500).message("error connecting to user");
     }
 
-     try{
-  const newFr  =await FriendRequest.create({
-    sender:myId,
-    recipient:userId
-  });
-  res.status(201).json(newFr);
-     } 
-   catch(error)
-   {
-    console.log("error in creating request");
-   }
     }
     catch(error)
     {
-        return res.status(400).json({message:"error in finding user"});
+        return res.status(400).json({message:"error in connecting to user"});
     }
 
     
@@ -106,7 +93,7 @@ export async function acceptFriendRequest(req,res) {
       await User.findByIdAndUpdate(friendRequest.recipient,{
         $addToSet:{friends:friendRequest.sender},
      });
-console.log("gggg");
+
       await FriendRequest.findByIdAndUpdate(requesId,{
         status:"accepted"
      });

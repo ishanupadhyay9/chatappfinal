@@ -123,7 +123,7 @@ const FindPage = () => {
                                                 onClick={() =>{setUserId(user._id); sendRequestMutation()}}
                                                 disabled={isPending}
                                             >
-                                                {isPending ? 'Sending...' : 'Send Request'}
+                                                {isPending ? 'Sending...' : 'Connect'}
                                             </button>
                                         </div>
                                     </div>
