@@ -91,7 +91,7 @@ const App = () => {
 
         <Route
           path="/onboarding"
-          element={ <OnboardingPage />}
+          element={ isAuthenticated?(<OnboardingPage />):(  <Navigate to={ "/login" } />)}
         />
 
          <Route
