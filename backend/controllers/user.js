@@ -2,6 +2,7 @@
 import FriendRequest from "../models/FriendRequest.js";
 import User from "../models/User.js";
 import mongoose from "mongoose";
+import { uploadImageToCloudinary } from "../connects/cloudinary.js";
 export async function getMyFriends(req,res){
 try{
     const user = await User.findById(req.user.id).select("friends").populate("friends", "fullName profilePic bio");
@@ -175,31 +176,90 @@ export async function findFriend(req, res) {
 }
 
 
-export async function updateDisplayPicture(req, res){
-  try {
-    const displayPicture = req.files.displayPicture
-    const {userId} = req.body;
-    const image = await uploadImageToCloudinary(
-      displayPicture,
-      process.env.FOLDER_NAME,
-      1000,
-      1000
-    )
-    console.log(image)
-    const updatedProfile = await User.findByIdAndUpdate(
-      { _id: userId },
-      { profilePic: image.secure_url },
-      { new: true }
-    )
-    res.send({
-      success: true,
-      message: `Image Updated successfully`,
-      data: updatedProfile,
-    })
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    })
-  }
+export async function updateDisplayPicture(req, res) {
+    try {
+        // Input validation
+        if (!req.files || !req.files.displayPicture) {
+            return res.status(400).json({
+                success: false,
+                message: "No image file provided"
+            });
+        }
+
+        const { userId } = req.body;
+        if (!userId) {
+            return res.status(400).json({
+                success: false,
+                message: "User ID is required"
+            });
+        }
+
+        // Authorization check (assuming you have user info in req.user from auth middleware)
+        if (req.user && req.user.id !== userId) {
+            return res.status(403).json({
+                success: false,
+                message: "You can only update your own profile picture"
+            });
+        }
+
+        const displayPicture = req.files.displayPicture;
+
+        // File validation
+        if (!displayPicture.mimetype.startsWith('image/')) {
+            return res.status(400).json({
+                success: false,
+                message: "Only image files are allowed"
+            });
+        }
+
+        if (displayPicture.size > 5 * 1024 * 1024) { // 5MB limit
+            return res.status(400).json({
+                success: false,
+                message: "File size must be less than 5MB"
+            });
+        }
+
+        // Upload to Cloudinary
+        const image = await uploadImageToCloudinary(
+            displayPicture,
+            process.env.FOLDER_NAME,
+            1000,
+            1000
+        );
+
+        if (!image || !image.secure_url) {
+            return res.status(500).json({
+                success: false,
+                message: "Failed to upload image to cloud storage"
+            });
+        }
+
+        // Update user profile
+        const updatedProfile = await User.findByIdAndUpdate(
+            { _id: userId },
+            { profilePic: image.secure_url },
+            { new: true }
+        );
+
+        if (!updatedProfile) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+
+        // Consistent response format
+        return res.status(200).json({
+            success: true,
+            message: "Image updated successfully",
+            data: updatedProfile,
+        });
+
+    } catch (error) {
+        console.error("Error in updateDisplayPicture:", error);
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal server error"
+        });
+    }
 }
