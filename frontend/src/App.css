@@ -13,15 +13,16 @@
 .str-chat__container {
   max-width: 1200px;
   width: 100%;
-  height: 80% !important;
+  height: 90% !important;
   margin: 0 auto !important;
   border-radius: 8px;
+   background-image: url("./bg.png");
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
 
 .str-chat__list {
-  background-color: #ffffff;
+   background-image: url("./bg.png");
   padding: 12px;
 }
 
