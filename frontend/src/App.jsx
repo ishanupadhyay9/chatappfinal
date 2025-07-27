@@ -19,7 +19,7 @@ import FindPage from "./pages/FindPage.jsx";
 
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
-  const theme  = "valentine";
+  const theme  = "caramellatte";
 
   const isAuthenticated = Boolean(authUser);
   const isOnboarded = authUser?.isOnboarded;
