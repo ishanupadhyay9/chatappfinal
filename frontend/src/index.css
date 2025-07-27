@@ -6,7 +6,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(to bottom, #c7a234 , #776019);
+  background: linear-gradient(to bottom, #292b8d , #220857);
   height: 100%;
 }
 
@@ -16,6 +16,7 @@
   height: 80% !important;
   margin: 0 auto !important;
   border-radius: 8px;
+  background-image: url("./bg.png");
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   overflow: hidden;
 }
