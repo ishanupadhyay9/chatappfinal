@@ -6,7 +6,6 @@ import {
   getFriendRequests,
   getOutgoingFriendReqs,
   findFriend,
-  updateDisplayPicture
 } from '../controllers/user.js';
 import { protectRoute } from '../middlewares/updat.js';
 

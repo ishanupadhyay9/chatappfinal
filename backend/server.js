@@ -3,7 +3,6 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import fileUpload from "express-fileupload";
 
 import { connectDB } from "./connects/mongodb.js";
 import { cloudinaryConnect } from "./connects/cloudinary.js";
@@ -13,19 +12,6 @@ import chatRouter from "./routes/chat.js";
 
 const app = express();
 const PORT = parseInt(process.env.PORT) || 3000;
-
-app.use(
-    fileUpload({
-        useTempFiles: true,
-        tempFileDir: "/tmp/", // Render-compatible temp directory
-        createParentPath: true,
-        limits: { 
-            fileSize: 10 * 1024 * 1024 // 10MB
-        },
-        debug: false, // Disable debug inpreserveExtension: true
-    })
-);
-
 
 cloudinaryConnect();
 connectDB();
@@ -46,7 +32,6 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
 
-//  Routes (NO global auth middleware)
 app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter); // Auth applied selectively inside routes
 app.use("/api/chat", chatRouter);
@@ -55,7 +40,6 @@ app.get("/", (req, res) => {
     res.send("QuickChat Server Running 🚀");
 });
 
-//  Error handling
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
     res.status(500).json({ 
