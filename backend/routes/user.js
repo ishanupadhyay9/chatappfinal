@@ -12,7 +12,6 @@ import { protectRoute } from '../middlewares/updat.js';
 
 const userRouter = express.Router();
 
-userRouter.post('/update-pic', updateDisplayPicture);
 
 userRouter.get('/friends', protectRoute, getMyFriends);
 userRouter.post('/friend-request', sendFriendRequest);
